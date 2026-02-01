@@ -1,0 +1,21 @@
+# VMMFNet Dataset Configuration
+path: G:/ultralytics/datasetstest
+
+# Training set
+train: images/train
+train_multispectral: images/train_ms  # Path for multispectral/VI images
+
+# Validation set
+val: images/val
+val_multispectral: images/val_ms  # Path for multispectral/VI images
+
+# Test set (Optional)
+test: images/test
+test_multispectral: images/test_ms
+
+# Classes
+nc: 3
+names:
+  0: mid
+  1: early
+  2: late

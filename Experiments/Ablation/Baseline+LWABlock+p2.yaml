@@ -1,0 +1,76 @@
+# Dual-branch backbone with C2f_LWAConv and P2–P5 detection head
+
+# Parameters
+ch: 6
+nc: 3  # number of classes
+
+# Backbone (dual-branch)
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, IN, []]                 # 0
+  - [-1, 1, Multiin, [1]]           # 1  visible branch selector
+  - [-2, 1, Multiin, [2]]           # 2  multispectral branch selector
+
+  # Branch 1
+  - [1, 1, Conv,        [64, 3, 2]]     # 3-P1/2
+  - [-1, 1, Conv,       [128, 3, 2]]    # 4-P2/4
+  - [-1, 3, C2f_LWAConv,[128, True]]    # 5
+  - [-1, 1, Conv,       [256, 3, 2]]    # 6-P3/8
+  - [-1, 6, C2f_LWAConv,[256, True]]    # 7
+  - [-1, 1, Conv,       [512, 3, 2]]    # 8-P4/16
+  - [-1, 6, C2f_LWAConv,[512, True]]    # 9
+  - [-1, 1, Conv,       [1024, 3, 2]]   # 10-P5/32
+  - [-1, 3, C2f_LWAConv,[1024, True]]   # 11
+
+  # Branch 2
+  - [2, 1, Conv,        [64, 3, 2]]     # 12-P1/2
+  - [-1, 1, Conv,       [128, 3, 2]]    # 13-P2/4
+  - [-1, 3, C2f_LWAConv,[128, True]]    # 14
+  - [-1, 1, Conv,       [256, 3, 2]]    # 15-P3/8
+  - [-1, 6, C2f_LWAConv,[256, True]]    # 16
+  - [-1, 1, Conv,       [512, 3, 2]]    # 17-P4/16
+  - [-1, 6, C2f_LWAConv,[512, True]]    # 18
+  - [-1, 1, Conv,       [1024, 3, 2]]   # 19-P5/32
+  - [-1, 3, C2f_LWAConv,[1024, True]]   # 20
+
+  # Dual-branch fusion features
+  - [[7, 16], 1, Concat, [1]]           # 21 fused P3
+  - [[9, 18], 1, Concat, [1]]           # 22 fused P4
+  - [[11, 20], 1, Concat, [1]]          # 23 fused P5
+
+  - [-1, 1, SPPF, [1024, 5]]            # 24 SPPF on fused P5
+
+# Head (P2–P5, PAN-style, C2f_LWAConv)
+head:
+  # Top-down: P5 -> P4
+  - [24, 1, nn.Upsample, [None, 2, "nearest"]]  # 25
+  - [[-1, 22], 1, Concat, [1]]                  # 26  up-P5 + fused P4
+  - [-1, 3, C2f_LWAConv, [512, True]]           # 27  P4 head
+
+  # Top-down: P4 -> P3
+  - [27, 1, nn.Upsample, [None, 2, "nearest"]]  # 28
+  - [[-1, 21], 1, Concat, [1]]                  # 29  up-P4 + fused P3
+  - [-1, 3, C2f_LWAConv, [256, True]]           # 30  P3 head
+
+  # Top-down: P3 -> P2（加入双分支 P2 特征）
+  - [30, 1, nn.Upsample, [None, 2, "nearest"]]  # 31
+  - [[-1, 5, 14], 1, Concat, [1]]               # 32  up-P3 + P2(b1) + P2(b2)
+  - [-1, 3, C2f_LWAConv, [128, True]]           # 33  P2 head
+
+  # Bottom-up: P2 -> P3
+  - [33, 1, Conv, [128, 3, 2]]                  # 34
+  - [[-1, 30], 1, Concat, [1]]                  # 35
+  - [-1, 3, C2f_LWAConv, [256, True]]           # 36  refined P3
+
+  # Bottom-up: P3 -> P4
+  - [36, 1, Conv, [256, 3, 2]]                  # 37
+  - [[-1, 27], 1, Concat, [1]]                  # 38
+  - [-1, 3, C2f_LWAConv, [512, True]]           # 39  refined P4
+
+  # Bottom-up: P4 -> P5
+  - [39, 1, Conv, [512, 3, 2]]                  # 40
+  - [[-1, 24], 1, Concat, [1]]                  # 41
+  - [-1, 3, C2f_LWAConv, [1024, True]]          # 42  refined P5
+
+  # Detect(P2, P3, P4, P5)
+  - [[33, 36, 39, 42], 1, Detect, [nc]]         # 43 Detect(P2, P3, P4, P5)
