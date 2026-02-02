@@ -347,3 +347,4 @@ def load_calibration_config():
             if all(b in data for b in BANDS_TO_PROCESS):
                 return data
     return None
+
