@@ -7,6 +7,27 @@
 [![PyTorch 1.10+](https://img.shields.io/badge/PyTorch-1.10+-ee4c2c.svg)](https://pytorch.org/)
 
 ---
+---
+
+## 🧠 Model Architecture: VMMFNet
+
+The architecture of **VMMFNet** is engineered to address the specific challenges of early-stage PWD detection by integrating three specialized components:
+
+![VMMFNet Architecture Diagram](images/architecture.png)
+
+### Core Components:
+
+1. **LWANet Backbone (Lightweight Attention Network)**
+   * **Dual-Branch Structure**: Efficiently decouples and processes key features from redundant information.
+   * **LWABlock & MSAA**: Embeds Multi-Scale Attention Aggregation to enhance weak lesion signals while maintaining a lightweight profile.
+
+2. **HMAFNet Neck (Hierarchical Multi-Scale Attention Fusion)**
+   * **HLAF Mechanism**: Leverages high-level semantics to guide low-level feature fusion, effectively suppressing complex background noise in forest environments.
+
+3. **Micro-target Prediction Heads**
+   * **Stride-4 Detection**: Extends the detection hierarchy to high-resolution shallow features.
+   * **Multi-Scale Robustness**: Enables high-precision detection across extreme scale variations, from minute needle discoloration ($4 \times 4$ pixels) to late-stage crown decline.
+
 
 ---
 
@@ -37,15 +58,29 @@ The study is organized into five systematic phases:
 
 ---
 
+---
+
 ## 📁 Repository Structure
 
+The project is organized to facilitate the modular implementation of multispectral fusion and ease of reproducibility:
+
 ```text
-├── configs/                # Model configuration files (AdamW, lr=0.01, etc.)
-├── data_processing/        # Scripts for tiling and spatial anti-leakage checks
-│   ├── uav_dataset_construction.py
-│   └── spatial_anti_leakage_check.py
-├── models/                 # LWANet backbone and HMAFNet implementation
-├── train.py                # Main training script (AMP & EMA enabled)
-├── val.py                  # Evaluation and inference script
-├── metadata.pdf            # Technical specs (M3M bands, flight parameters)
+.
+├── configs/                # Hyperparameter configurations (.yaml)
+│   └── vmmfnet_lightweight.yaml    # Standard training params (AdamW, lr=0.01)
+├── data_processing/        # Data handling and integrity verification
+│   ├── uav_dataset_construction.py # MS/RGB tiling & alignment pipeline
+│   └── spatial_anti_leakage_check.py # Geographic overlap verification
+├── images/                 # Visual assets for documentation
+│   └── workflow.png        # Overall research design flowchart
+|   └── architecture.png    # VMMFNet architecture
+├── models/                 # Neural network architecture
+│   ├── lwa_backbone.py     # Lightweight dual-branch backbone
+│   ├── hmaf_neck.py        # Multi-scale fusion neck
+│   └── vmmfnet.py          # Complete integrated framework
+├── utils/                  # Evaluation metrics & visualization tools
+├── train.py                # Training script with AMP & EMA
+├── val.py                  # Validation and inference script
+├── requirements.txt        # Python environment dependencies
+├── metadata.pdf            # Technical specifications & GSD analysis
 └── README.md
