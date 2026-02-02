@@ -60,28 +60,30 @@ The study is organized into five systematic phases:
 
 ---
 
+---
+
 ## 📁 Repository Structure
 
-The project is organized to facilitate the modular implementation of multispectral fusion and ease of reproducibility:
+The project is structured to ensure modularity and ease of reproducibility for multispectral PWD detection:
 
 ```text
 .
-├── Experiments/               
-│   └── Ablation/
-│   └── Comparative Experiment of Different Models/
-│   └── pt
-│   └── Dataset Configuration.yaml
-│   └── Training Configuration.yaml
-│   └── train.py
-├── data_processing/        # Data handling and integrity verification
-│   ├── uav_dataset_construction.py # MS/RGB tiling & alignment pipeline
-│   └── spatial_anti_leakage_check.py # Geographic overlap verification
-│   └── Multispectral Radiometric Calibration and Processing Toolkit.py
-├── images/                 # Visual assets for documentation
-│   └── workflow.png        # Overall research design flowchart
-|   └── architecture.png    # VMMFNet architecture
-├── modules/                 # Neural network architecture
-│   ├── LWABlock.py     # Lightweight dual-branch backbone
-│   ├── HLAF.py        # Multi-scale fusion neck
-│   └── MSAA.py          # Complete integrated framework
-└── README.md
+├── Experiments/                # Model training, evaluation, and configurations
+│   ├── Ablation/               # Scripts and logs for ablation studies
+│   ├── Comparative Experiment/ # Comparative analysis with SOTA models
+│   ├── pt/                     # Saved pre-trained weights and best models (.pt)
+│   ├── Dataset Configuration.yaml   # Dataset paths and class definitions
+│   ├── Training Configuration.yaml  # Hyperparameters (lr=0.01, AdamW, batch=8)
+│   └── train.py                # Main training execution script
+├── data_processing/            # Data handling and preprocessing tools
+│   ├── uav_dataset_construction.py  # MS/RGB image tiling & alignment pipeline
+│   ├── spatial_anti_leakage_check.py # Geographic overlap verification script
+│   └── Multispectral Radiometric Calibration and Processing Toolkit.py # Radiometric correction tools
+├── images/                     # Visual assets for documentation
+│   ├── workflow.png            # Overall research design flowchart
+│   └── architecture.png        # VMMFNet network architecture diagram
+├── modules/                    # Core architectural components of VMMFNet
+│   ├── LWABlock.py             # Lightweight Attention Block implementation
+│   ├── HLAF.py                 # High-Low Attention Fusion mechanism
+│   └── MSAA.py                 # Multi-Scale Attention Aggregation module
+└── README.md                   # Project documentation
