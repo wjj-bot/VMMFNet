@@ -35,7 +35,7 @@ The architecture of **VMMFNet** is engineered to address the specific challenges
 
 To provide a clear understanding of the study, the complete experimental pipeline—from biological inoculation to model evaluation—is summarized in the figure below:
 
-![VMMFNet Research Workflow](images/image_workflow.png)
+![VMMFNet Research Workflow](images/workflow.png)
 
 ### Workflow Description:
 The study is organized into five systematic phases:
