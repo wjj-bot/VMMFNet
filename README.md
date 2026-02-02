@@ -66,21 +66,21 @@ The project is organized to facilitate the modular implementation of multispectr
 
 ```text
 .
-├── configs/                # Hyperparameter configurations (.yaml)
-│   └── vmmfnet_lightweight.yaml    # Standard training params (AdamW, lr=0.01)
+├── Experiments/               
+│   └── Ablation/
+│   └── Comparative Experiment of Different Models/
+│   └── pt
+│   └── Dataset Configuration.yaml
+│   └── Training Configuration.yaml
+│   └── train.py
 ├── data_processing/        # Data handling and integrity verification
 │   ├── uav_dataset_construction.py # MS/RGB tiling & alignment pipeline
 │   └── spatial_anti_leakage_check.py # Geographic overlap verification
 ├── images/                 # Visual assets for documentation
 │   └── workflow.png        # Overall research design flowchart
 |   └── architecture.png    # VMMFNet architecture
-├── models/                 # Neural network architecture
-│   ├── lwa_backbone.py     # Lightweight dual-branch backbone
-│   ├── hmaf_neck.py        # Multi-scale fusion neck
-│   └── vmmfnet.py          # Complete integrated framework
-├── utils/                  # Evaluation metrics & visualization tools
-├── train.py                # Training script with AMP & EMA
-├── val.py                  # Validation and inference script
-├── requirements.txt        # Python environment dependencies
-├── metadata.pdf            # Technical specifications & GSD analysis
+├── modules/                 # Neural network architecture
+│   ├── LWABlock.py     # Lightweight dual-branch backbone
+│   ├── HLAF.py        # Multi-scale fusion neck
+│   └── MSAA.py          # Complete integrated framework
 └── README.md
